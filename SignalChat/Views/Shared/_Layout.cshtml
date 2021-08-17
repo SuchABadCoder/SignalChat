@@ -36,13 +36,25 @@
     <div class="main">
         <div class="side-menu">
             <a class="room-button">Room</a> @*make action link*@
-            <a class="room-button">
+            <a class="room-button" id="create-room-btn">
                 <strong>+</strong>
             </a> @*make action link*@
         </div>
         <div class="chat">
         @RenderBody()
         </div>
+    </div>
+    <div class="modal active" id="create-room-modal">
+        <form asp-controller="" asp-action="" class="modal-body"> @*make form*@
+            <button class="close" onclick="closeModal()">X</button>
+            <header>Create Room</header>
+            <div>
+                <input />
+            </div>
+            <footer>
+                <button type="button">Create</button>
+            </footer>
+        </form>
     </div>
     @*<div class="container">
         <main role="main" class="pb-3">
@@ -57,6 +69,8 @@
     </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

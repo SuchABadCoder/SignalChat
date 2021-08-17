@@ -77,7 +77,7 @@ body {*/
 body {
     margin: 0;
     height: 100vh;
-    width: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
 }
@@ -189,5 +189,57 @@ body {
 
 .message > footer {
     min-width: 60px;
+    text-align: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    min-height: 100vh;
+    min-width: 100vw;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    background-color: rgba(0.2, 0.2, 0.2, 0.8);
+    text-align: center;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-body > .close {
+   position: absolute;
+   top: 5px;
+   right: 5px;
+   margin-top: 0;
+
+}
+
+.modal-body {
+    position: relative;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    background-color: #3a3281;
+    padding: 1rem;
+}
+
+.modal-body > * {
+    margin-top: 0.75rem;
+}
+
+.modal-body > header {
+    color: #fff;
+    font-size: 24px;
+}
+
+.modal-body > div > input {
+    width: 100%;
+}
+
+.modal-body > footer {
     text-align: center;
 }
