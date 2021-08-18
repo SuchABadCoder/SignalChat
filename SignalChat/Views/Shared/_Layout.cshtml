@@ -44,17 +44,18 @@
         @RenderBody()
         </div>
     </div>
-    <div class="modal active" id="create-room-modal">
-        <form asp-controller="" asp-action="" class="modal-body"> @*make form*@
-            <button class="close" onclick="closeModal()">X</button>
+    <div class="modal" id="create-room-modal">
+        @using (Html.BeginForm("CreateRoom", "Home", FormMethod.Post, new { @class = "modal-body" }))
+        {
+            <button type="button" class="close" onclick="closeModal()">X</button>
             <header>Create Room</header>
             <div>
-                <input />
+                <input name="name">
             </div>
             <footer>
-                <button type="button">Create</button>
+                <button type="submit">Create</button>
             </footer>
-        </form>
+        }
     </div>
     @*<div class="container">
         <main role="main" class="pb-3">

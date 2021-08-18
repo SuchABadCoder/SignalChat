@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SignalChat.Data;
 using SignalChat.Models;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace SignalChat.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -23,9 +24,21 @@ namespace SignalChat.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        //public IActionResult Privacy()
+        //{
+        //    return View();
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRoom(string name)
         {
-            return View();
+            _context.Chats.Add(new Chat{
+                Name = name,
+                Type = ChatType.Room
+            });
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
