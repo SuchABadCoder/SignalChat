@@ -1,0 +1,11 @@
+﻿<div>
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        <input type="text" name="username" placeholder="Username"/>
+        <input type="password" name="password" placeholder="Password"/>
+        <button type="submit">Submit</button>
+    }
+</div>
+<div>
+    @Html.ActionLink("Register", "Register", "Account")
+</div>
