@@ -33,17 +33,12 @@
             </div>
         </nav>
     </header>*@
-    <div class="main">
-        <div class="side-menu">
-            <a class="room-button">Room</a> @*make action link*@
-            <a class="room-button" id="create-room-btn">
-                <strong>+</strong>
-            </a> @*make action link*@
-        </div>
-        <div class="chat">
+<div class="main">
+    @await Component.InvokeAsync("Room")
+    <div class="chat">
         @RenderBody()
-        </div>
     </div>
+</div>
     <div class="modal" id="create-room-modal">
         @using (Html.BeginForm("CreateRoom", "Home", FormMethod.Post, new { @class = "modal-body" }))
         {
