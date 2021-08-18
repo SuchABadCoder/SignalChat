@@ -4,7 +4,7 @@
 
     @foreach (var chat in Model)
     {
-        <a class="room-button">@chat.Name</a> @*make action link*@
+        @Html.ActionLink(@chat.Name ?? "Unknown", "Chat", "Home", routeValues: new { id = chat.Id }, htmlAttributes: new { @class = "room-button" });
     }
 
     <a class="room-button" id="create-room-btn">

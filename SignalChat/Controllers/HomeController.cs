@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using SignalChat.Data;
 using SignalChat.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,10 +22,31 @@ namespace SignalChat.Controllers
             return View();
         }
 
-        //public IActionResult Privacy()
-        //{
-        //    return View();
-        //}
+        [HttpGet("{id}")]
+        public IActionResult Chat(int id)
+        {
+            var chat = _context.Chats
+                .Include(x => x.Messages)
+                .FirstOrDefault(x => x.Id == id);
+            return View(chat);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMessage(int chatId, string messageText)
+        {
+            var message = new Message
+            {
+                ChatId = chatId,
+                Text = messageText,
+                UserName = "Default",
+                DateTime = System.DateTime.Now
+            };
+
+            _context.Messages.Add(message);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Chat", new { id = chatId });
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateRoom(string name)

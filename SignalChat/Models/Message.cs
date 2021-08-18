@@ -11,5 +11,9 @@ namespace SignalChat.Models
         public string Text { get; set; }
 
         public DateTime DateTime { get; set; }
+
+        public int ChatId { get; set; }
+
+        public Chat Chat { get; set; }
     }
 }
