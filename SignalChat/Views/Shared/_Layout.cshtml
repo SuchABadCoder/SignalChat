@@ -34,7 +34,10 @@
         </nav>
     </header>*@
 <div class="main">
+    @if (User.Identity.IsAuthenticated)
+    {
     @await Component.InvokeAsync("Room")
+    }
     <div class="chat">
         @RenderBody()
     </div>

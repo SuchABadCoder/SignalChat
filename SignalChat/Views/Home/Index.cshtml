@@ -1,15 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<Chat>
 
 <div class="chat-body">
-    <div class="message">
-        <header>Yaroslav</header>
-        <p>Some sort of message</p>
-        <footer>16:00</footer>
-    </div>
-</div>
-<div class="chat-input">
-    <input type="text" />
-    <button>Send</button>
+    @foreach(var chat in Model)
+     {
+        @Html.ActionLink(chat.Name ?? "Unknown", "JoinRoom", "Home", routeValues: new { id = chat.Id }, htmlAttributes: new { @class = "room-button" })
+     }
 </div>
