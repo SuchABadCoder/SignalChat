@@ -39,6 +39,7 @@ namespace SignalChat
                 .AddDefaultTokenProviders();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +63,11 @@ namespace SignalChat
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSignalR(routes =>
+            {
+
+            });
 
             app.UseEndpoints(endpoints =>
             {
