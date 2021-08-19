@@ -9,9 +9,14 @@ namespace SignalChat.Hubs
 {
     public class ChatHub : Hub
     {
-        public async Task Send(string message, string userName)
+        public async Task Send(string message, string userName, string chatId)
         {
-            await Clients.All.SendAsync("BroadcastMessage", message, userName);
+            await Clients.All.SendAsync("BroadcastMessage", message, userName, chatId);
+        }
+
+        public async Task Edit(string newText, int messageId)
+        {
+            await Clients.All.SendAsync("EditMessage", newText, messageId);
         }
 
     }

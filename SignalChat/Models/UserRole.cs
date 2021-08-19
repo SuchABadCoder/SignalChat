@@ -8,6 +8,7 @@ namespace SignalChat.Models
     public enum UserRole
     { 
         Admin,
-        Member
+        Member,
+        SuperAdmin
     }
 }

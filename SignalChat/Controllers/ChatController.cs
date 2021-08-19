@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SignalChat.Data;
 using SignalChat.Hubs;
+using System.Linq;
 using SignalChat.Models;
 using System.Threading.Tasks;
 
@@ -13,10 +14,12 @@ namespace SignalChat.Controllers
     public class ChatController : Controller
     {
         private IHubContext<ChatHub> _chat;
-
-        public ChatController(IHubContext<ChatHub> chat)
+        //private ApplicationDbContext _context;
+        private object locker = new object();
+        public ChatController(IHubContext<ChatHub> chat, ApplicationDbContext context)
         {
             _chat = chat;
+           // _context = context;
         }
 
         //[HttpPost("[action]/{connectionId}/{roomId}")]
@@ -48,12 +51,17 @@ namespace SignalChat.Controllers
                 DateTime = System.DateTime.Now
             };
 
-            context.Messages.Add(message);
+            lock (locker)
+            {
+                context.Messages.Add(message);
+            }
             await context.SaveChangesAsync();
-
             await _chat.Clients.Group(chatId.ToString()).SendAsync("Send", message);
 
             return Ok();
         }
+
+
+
     }
 }

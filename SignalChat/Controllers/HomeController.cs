@@ -78,9 +78,12 @@ namespace SignalChat.Controllers
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var chat = _context.Chats
                 .Include(x => x.Messages)
                 .FirstOrDefault(x => x.Id == id);
+            var UserRole = _context.ChatUsers.Where(x => x.ChatId == id && x.UserId == UserId).FirstOrDefault().Role;
+            ViewBag.UserRole = UserRole;
             ViewBag.UserName = User.Identity.Name;
             return View(chat);
         }
@@ -144,5 +147,24 @@ namespace SignalChat.Controllers
 
             return RedirectToAction("Chat", "Home", new { id = id });
         }
+
+        public async Task<IActionResult> EditMessage(
+    int messageId,
+    string newText)
+        {
+
+            var mes = _context.Messages.Where(x => x.Id == messageId).FirstOrDefault();
+            mes.Text = newText;
+            await _context.SaveChangesAsync();
+            return Ok();
+
+        }
+
+        //public async Task<JsonResult> GetMessageId(string UserName, string Text)
+        //{
+
+        //    var Id = await _context.Messages.Where(x => x.Text == Text && x.UserName == UserName).ToListAsync();
+        //    return Json(Id);
+        //}
     }
 }

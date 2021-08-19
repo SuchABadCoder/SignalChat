@@ -3,15 +3,17 @@
 <div class="chat-body" id="chatbody">
     @foreach (var message in Model.Messages)
     {
-        <div class="message">
+        <div class="message" onclick='EditMess(@message.Id, "@message.Text", "@ViewBag.UserRole", "@message.UserName")'>
             <header>@message.UserName:</header>
-            <p>@message.Text</p>
+            <p id="@message.Id">@message.Text</p>
             <footer>@message.DateTime</footer>
+            @*<a href="" onclick = "EditMessage(@message.Id, @message.Text)">Edit</a>*@
         </div>
     }
 </div>
+
 <div class = "chat-input">
-        <input type="hidden" name="chatId" value="@Model.Id" />
+        <input type="hidden" id="chatId" value="@Model.Id" />
         <input type="hidden" id="userName" value="@ViewContext.HttpContext.User.Identity.Name"/>
         <input name="messageText" type="text" id="message" />
         <input type="submit" id="send" value="Send" />
@@ -20,9 +22,10 @@
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 
 <script type="text/javascript">
-        var connection = new signalR.HubConnectionBuilder()
-                   .withUrl("/chatHub")
-            .build();
+    var userName = document.getElementById("userName").value;
+    var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+        .build();
 
         connection.start().then(function () { }).catch(function (err) {
             return console.error(err.toString());
@@ -30,44 +33,95 @@
 
     document.getElementById("send").addEventListener("click", function (event) {
         var message = document.getElementById("message").value;
-        var userName = document.getElementById("userName").value;
+        var chatId = document.getElementById("chatId").value;
         $.ajax({
             url: "@Url.Action("SendMessage", "chat")",
             type: "POST",
             data: {
-                'chatId': @Model.Id,
+                'chatId': chatId,
                 'messageText': message
             },
             dataType: 'json',
             success: function () { console.log("Success!") }
         });
-
-        connection.invoke("Send", message, userName).catch(function (err) {
+        connection.invoke("Send", message, userName, chatId).catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
     });
 
-    connection.on("BroadcastMessage", function (message, userName) {
-        console.log(message);
-                var mes = document.createElement("div");
-                mes.classList.add('message')
 
-                var header = document.createElement("header")
-                header.appendChild(document.createTextNode(userName))
+    var editMessageModal = document.getElementById("edit-message-modal")
+    var MessageId = 0;
 
-                var p = document.createElement("p")
-                p.appendChild(document.createTextNode(message))
+    function EditMess(Id, Text, userRole, UserName) {
+        console.log(userRole);
+        if (userRole == "SuperAdmin" || UserName == userName) {
+            editMessageModal.classList.add('active');
+            document.getElementById("message-text-modal").value = Text;
+            MessageId = Id;
+        }
+    }
 
-                var footer = document.createElement("footer")
-        footer.appendChild(document.createTextNode(new Date()
-            .toLocaleDateString() + ' ' + new Date().toLocaleTimeString()));
+    connection.on("BroadcastMessage", function (message, userName, chatId) {
+        @*var newMessageId;
+         $.ajax({
+        url: "@Url.Action("GetMessageId", "Home")",
+        type: "POST",
+        data: {
+            'UserName': userName,
+            'Text': message
+        },
+        dataType: 'json',
+             success: function (Id) {
+                 newMessageId = Id;
+        }
+         });
+        console.log(newMessageId);*@
+        var ChatId = document.getElementById("chatId").value;
+        if (ChatId == chatId) {
+            document.getElementById("message").value = '';
+            var mes = document.createElement("div");
+            mes.classList.add('message')
+            var header = document.createElement("header")
+            header.appendChild(document.createTextNode(userName))
+            var p = document.createElement("p")
+            p.appendChild(document.createTextNode(message))
+            var footer = document.createElement("footer")
+            footer.appendChild(document.createTextNode(new Date()
+                .toLocaleDateString() + ' ' + new Date().toLocaleTimeString()));
+            mes.appendChild(header);
+            mes.appendChild(p);
+            mes.appendChild(footer);
+            document.querySelector('.chat-body').append(mes);
+        }
+    });
 
-                mes.appendChild(header);
-                mes.appendChild(p);
-                mes.appendChild(footer);
+    function SubmitEdit() {
+    console.log("confirm");
+    var newText = document.getElementById("message-text-modal").value
+    $.ajax({
+        ViewBagrl: "@Url.Action("EditMessage", "Home")",
+        type: "POST",
+        data: {
+            'messageId': MessageId,
+            'newText': newText
+        },
+        dataType: 'json',
+        success: function () {
+            console.log("SUCCESS");
+        }
+    });
+    connection.invoke("Edit", newText, MessageId).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+    }
 
-                document.querySelector('.chat-body').append(mes);
-        });
+    connection.on("EditMessage", function (newText, messageId) {
+        console.log(newText);
+        document.getElementById(messageId).innerHTML = newText;
+     editMessageModal.classList.remove('active');
+});
 </script>
 

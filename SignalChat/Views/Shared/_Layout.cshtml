@@ -18,15 +18,15 @@
         @Html.ActionLink(@userName ?? "Unknown", "Index", "Home") @*fix that todo*@
     </div>
 
-<div class="main">
-    @if (User.Identity.IsAuthenticated)
-    {
-    @await Component.InvokeAsync("Room")
-    }
-    <div class="chat">
-        @RenderBody()
+    <div class="main">
+        @if (User.Identity.IsAuthenticated)
+        {
+            @await Component.InvokeAsync("Room")
+        }
+        <div class="chat">
+            @RenderBody()
+        </div>
     </div>
-</div>
     <div class="modal" id="create-room-modal">
         @using (Html.BeginForm("CreateRoom", "Home", FormMethod.Post, new { @class = "modal-body" }))
         {
@@ -41,11 +41,29 @@
         }
     </div>
 
+    <div class="modal" id="edit-message-modal">
+        <div class="modal-body">
+            <button type="button" class="close" onclick="CloseEditModal()">X</button>
+            <header>Edit Message</header>
+            <div>
+                <input type="text" id="message-text-modal" />
+                <input type="button" onclick="SubmitEdit()" value="Edit" />
+            </div>
+            <footer>
+                <button type="submit">Edit</button>
+            </footer>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @*<script type="text/javascript">
+
+        
+    </script>*@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
