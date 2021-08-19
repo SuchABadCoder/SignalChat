@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SignalChat.Data;
+using SignalChat.Hubs;
 using SignalChat.Models;
 
 namespace SignalChat
@@ -64,17 +65,13 @@ namespace SignalChat
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseSignalR(routes =>
-            {
-
-            });
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chathub");
             });
         }
     }

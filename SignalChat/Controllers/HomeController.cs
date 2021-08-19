@@ -30,31 +30,77 @@ namespace SignalChat.Controllers
             return View(chats);
         }
 
+        //public IActionResult Find()
+        //{
+        //    var users = _context.Users
+        //        .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+        //        .ToList();
+
+        //    return View(users);
+        //}
+
+        //public IActionResult Private()
+        //{
+        //    var chats = _context.Chats
+        //        .Include(x => x.Users)
+        //            .ThenInclude(x => x.User)
+        //        .Where(x => x.Type == ChatType.Private
+        //            && x.Users
+        //            .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+        //        .ToList();
+        //    ViewBag.UserId = ClaimTypes.NameIdentifier;
+        //    return View(chats);
+        //}
+
+        //public async Task<IActionResult> CreatePrivateRoom(string userId)
+        //{
+        //    var chat = new Chat
+        //    {
+        //        Type = ChatType.Private
+        //    };
+
+        //    chat.Users.Add(new ChatUser
+        //    {
+        //        UserId = userId
+        //    });
+
+        //    chat.Users.Add(new ChatUser
+        //    {
+        //        UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
+        //    });
+
+        //    _context.Chats.Add(chat);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction("Chat", new { id = chat.Id });
+        //}
+
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
             var chat = _context.Chats
                 .Include(x => x.Messages)
                 .FirstOrDefault(x => x.Id == id);
+            ViewBag.UserName = User.Identity.Name;
             return View(chat);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateMessage(int chatId, string messageText)
-        {
-            var message = new Message
-            {
-                ChatId = chatId,
-                Text = messageText,
-                UserName = User.Identity.Name,
-                DateTime = System.DateTime.Now
-            };
+        //[HttpPost]
+        //public async Task<IActionResult> CreateMessage(int chatId, string messageText)
+        //{
+        //    var message = new Message
+        //    {
+        //        ChatId = chatId,
+        //        Text = messageText,
+        //        UserName = User.Identity.Name,
+        //        DateTime = System.DateTime.Now
+        //    };
 
-            _context.Messages.Add(message);
-            await _context.SaveChangesAsync();
+        //    _context.Messages.Add(message);
+        //    await _context.SaveChangesAsync();
 
-            return RedirectToAction("Chat", new { id = chatId });
-        }
+        //    return RedirectToAction("Chat", new { id = chatId });
+        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateRoom(string name)
@@ -70,7 +116,7 @@ namespace SignalChat.Controllers
                 UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value, //search how it works
                 Role = UserRole.Admin
             });
-             
+
             _context.Chats.Add(chat);
             await _context.SaveChangesAsync();
 
@@ -97,6 +143,6 @@ namespace SignalChat.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Chat", "Home", new { id = id });
-        } 
+        }
     }
 }

@@ -1,20 +1,73 @@
 ﻿@model Chat
 
-    <div class="chat-body">
-        @foreach(var message in Model.Messages)
-         {
-            <div class="message">
-                <header>@message.UserName:</header>
-                <p>@message.Text</p>
-                <footer>@message.DateTime</footer>
-            </div>
-         }
-    </div>
-    <div>
-        @using (Html.BeginForm("CreateMessage", "Home", FormMethod.Post, new { @class = "chat-input" }))
-        {
+<div class="chat-body" id="chatbody">
+    @foreach (var message in Model.Messages)
+    {
+        <div class="message">
+            <header>@message.UserName:</header>
+            <p>@message.Text</p>
+            <footer>@message.DateTime</footer>
+        </div>
+    }
+</div>
+<div class = "chat-input">
         <input type="hidden" name="chatId" value="@Model.Id" />
-        <input name="messageText" type="text" />
-        <button type="submit">Send</button>
-        }
-    </div>
+        <input type="hidden" id="userName" value="@ViewContext.HttpContext.User.Identity.Name"/>
+        <input name="messageText" type="text" id="message" />
+        <input type="submit" id="send" value="Send" />
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+<script type="text/javascript">
+        var connection = new signalR.HubConnectionBuilder()
+                   .withUrl("/chatHub")
+            .build();
+
+        connection.start().then(function () { }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    document.getElementById("send").addEventListener("click", function (event) {
+        var message = document.getElementById("message").value;
+        var userName = document.getElementById("userName").value;
+        $.ajax({
+            url: "@Url.Action("SendMessage", "chat")",
+            type: "POST",
+            data: {
+                'chatId': @Model.Id,
+                'messageText': message
+            },
+            dataType: 'json',
+            success: function () { console.log("Success!") }
+        });
+
+        connection.invoke("Send", message, userName).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    connection.on("BroadcastMessage", function (message, userName) {
+        console.log(message);
+                var mes = document.createElement("div");
+                mes.classList.add('message')
+
+                var header = document.createElement("header")
+                header.appendChild(document.createTextNode(userName))
+
+                var p = document.createElement("p")
+                p.appendChild(document.createTextNode(message))
+
+                var footer = document.createElement("footer")
+        footer.appendChild(document.createTextNode(new Date()
+            .toLocaleDateString() + ' ' + new Date().toLocaleTimeString()));
+
+                mes.appendChild(header);
+                mes.appendChild(p);
+                mes.appendChild(footer);
+
+                document.querySelector('.chat-body').append(mes);
+        });
+</script>
+

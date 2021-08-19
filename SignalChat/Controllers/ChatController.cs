@@ -19,26 +19,25 @@ namespace SignalChat.Controllers
             _chat = chat;
         }
 
-        [HttpPost("[action]/{connectionId}/{roomName}")]
-        public async Task<IActionResult> JoinRoom(string connectionId, string roomName)
-        {
-            await _chat.Groups.AddToGroupAsync(connectionId, roomName);
+        //[HttpPost("[action]/{connectionId}/{roomId}")]
+        //public async Task<IActionResult> JoinRoom(string connectionId, string roomId)
+        //{
+        //    await _chat.Groups.AddToGroupAsync(connectionId, roomId);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
-        [HttpPost("[action]/{connectionId}/{roomName}")]
-        public async Task<IActionResult> LeaveRoom(string connectionId, string roomName)
-        {
-            await _chat.Groups.RemoveFromGroupAsync(connectionId, roomName);
+        //[HttpPost("[action]/{connectionId}/{roomId}")]
+        //public async Task<IActionResult> LeaveRoom(string connectionId, string roomId)
+        //{
+        //    await _chat.Groups.RemoveFromGroupAsync(connectionId, roomId);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         public async Task<IActionResult> SendMessage(
             string messageText,
-            int chatId, 
-            string roomName,
+            int chatId,
             [FromServices] ApplicationDbContext context)
         {
             var message = new Message
@@ -52,7 +51,7 @@ namespace SignalChat.Controllers
             context.Messages.Add(message);
             await context.SaveChangesAsync();
 
-            await _chat.Clients.Group(roomName).SendAsync("RecieveMessage", message);
+            await _chat.Clients.Group(chatId.ToString()).SendAsync("Send", message);
 
             return Ok();
         }

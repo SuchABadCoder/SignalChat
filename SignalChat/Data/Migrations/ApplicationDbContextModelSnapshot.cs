@@ -220,9 +220,6 @@ namespace SignalChat.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ChatId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -268,8 +265,6 @@ namespace SignalChat.Data.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -336,13 +331,13 @@ namespace SignalChat.Data.Migrations
             modelBuilder.Entity("SignalChat.Models.ChatUser", b =>
                 {
                     b.HasOne("SignalChat.Models.Chat", "Chat")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SignalChat.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Chats")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -355,13 +350,6 @@ namespace SignalChat.Data.Migrations
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SignalChat.Models.User", b =>
-                {
-                    b.HasOne("SignalChat.Models.Chat", null)
-                        .WithMany("Users")
-                        .HasForeignKey("ChatId");
                 });
 #pragma warning restore 612, 618
         }
