@@ -148,11 +148,8 @@ namespace SignalChat.Controllers
             return RedirectToAction("Chat", "Home", new { id = id });
         }
 
-        public async Task<IActionResult> EditMessage(
-    int messageId,
-    string newText)
+        public async Task<IActionResult> EditMessage(int messageId, string newText)
         {
-
             var mes = _context.Messages.Where(x => x.Id == messageId).FirstOrDefault();
             mes.Text = newText;
             await _context.SaveChangesAsync();
@@ -160,6 +157,14 @@ namespace SignalChat.Controllers
 
         }
 
+        public async Task<IActionResult> DeleteMessage(int messageId)
+        {
+
+            _context.Messages.Remove(_context.Messages.Where(x => x.Id == messageId).FirstOrDefault());
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
         //public async Task<JsonResult> GetMessageId(string UserName, string Text)
         //{
 

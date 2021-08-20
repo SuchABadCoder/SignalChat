@@ -48,10 +48,8 @@
             <div>
                 <input type="text" id="message-text-modal" />
                 <input type="button" onclick="SubmitEdit()" value="Edit" />
+                <input type="button" onclick="DeleteMessage()" value="Delete"/>
             </div>
-            <footer>
-                <button type="submit">Edit</button>
-            </footer>
         </div>
     </div>
 
@@ -60,10 +58,6 @@
 
 
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @*<script type="text/javascript">
-
-        
-    </script>*@
     @RenderSection("Scripts", required: false)
 </body>
 </html>

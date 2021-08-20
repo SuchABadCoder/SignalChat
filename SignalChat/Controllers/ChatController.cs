@@ -15,7 +15,7 @@ namespace SignalChat.Controllers
     {
         private IHubContext<ChatHub> _chat;
         //private ApplicationDbContext _context;
-        private object locker = new object();
+        //private object locker = new object();
         public ChatController(IHubContext<ChatHub> chat, ApplicationDbContext context)
         {
             _chat = chat;
@@ -51,11 +51,9 @@ namespace SignalChat.Controllers
                 DateTime = System.DateTime.Now
             };
 
-            lock (locker)
-            {
-                context.Messages.Add(message);
-            }
+            context.Messages.Add(message);
             await context.SaveChangesAsync();
+
             await _chat.Clients.Group(chatId.ToString()).SendAsync("Send", message);
 
             return Ok();

@@ -98,10 +98,9 @@
     });
 
     function SubmitEdit() {
-    console.log("confirm");
     var newText = document.getElementById("message-text-modal").value
     $.ajax({
-        ViewBagrl: "@Url.Action("EditMessage", "Home")",
+        url: "@Url.Action("EditMessage", "Home")",
         type: "POST",
         data: {
             'messageId': MessageId,
@@ -118,10 +117,34 @@
     event.preventDefault();
     }
 
+    function DeleteMessage() {
+    $.ajax({
+        url: "@Url.Action("DeleteMessage", "Home")",
+        type: "POST",
+        data: {
+            'messageId': MessageId,
+        },
+        dataType: 'json',
+        success: function () {
+            console.log("SUCCESS");
+        }
+    });
+    connection.invoke("Delete", MessageId).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+    }
+
     connection.on("EditMessage", function (newText, messageId) {
         console.log(newText);
         document.getElementById(messageId).innerHTML = newText;
+        editMessageModal.classList.remove('active');
+    });
+
+     connection.on("DeleteMessage", function (messageId) {
+     console.log(messageId);
+     document.getElementById(messageId).remove();
      editMessageModal.classList.remove('active');
-});
+     });
 </script>
 

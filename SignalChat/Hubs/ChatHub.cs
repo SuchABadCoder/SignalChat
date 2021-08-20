@@ -19,5 +19,9 @@ namespace SignalChat.Hubs
             await Clients.All.SendAsync("EditMessage", newText, messageId);
         }
 
+        public async Task Delete(int messageId)
+        {
+            await Clients.All.SendAsync("DeleteMessage", messageId);
+        }
     }
 }
