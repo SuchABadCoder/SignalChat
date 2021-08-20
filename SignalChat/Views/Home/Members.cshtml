@@ -1,0 +1,8 @@
+﻿@model List<User>
+
+<div class="chat-body">
+    @foreach (var user in Model)
+    {
+        <p class="room-button" id="@user.Id">@user.UserName</p>
+    }
+</div>

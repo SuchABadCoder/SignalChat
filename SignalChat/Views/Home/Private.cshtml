@@ -1,8 +1,0 @@
-﻿@model IEnumerable<Chat>
-
-<div class="chat-body">
-    @foreach (var chat in Model)
-    {
-        @Html.ActionLink(chat.Users.FirstOrDefault(x => x.UserId != ViewBag.UserId).User.UserName ?? "Unknown", "Chat", "Home", routeValues: new { id = chat.Id }, htmlAttributes: new { @class = "room-button" })
-    }
-</div>

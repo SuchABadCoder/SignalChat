@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SignalChat.Data;
 using SignalChat.Hubs;
-using System.Linq;
 using SignalChat.Models;
 using System.Threading.Tasks;
 
@@ -14,29 +13,11 @@ namespace SignalChat.Controllers
     public class ChatController : Controller
     {
         private IHubContext<ChatHub> _chat;
-        //private ApplicationDbContext _context;
-        //private object locker = new object();
+
         public ChatController(IHubContext<ChatHub> chat, ApplicationDbContext context)
         {
             _chat = chat;
-           // _context = context;
         }
-
-        //[HttpPost("[action]/{connectionId}/{roomId}")]
-        //public async Task<IActionResult> JoinRoom(string connectionId, string roomId)
-        //{
-        //    await _chat.Groups.AddToGroupAsync(connectionId, roomId);
-
-        //    return Ok();
-        //}
-
-        //[HttpPost("[action]/{connectionId}/{roomId}")]
-        //public async Task<IActionResult> LeaveRoom(string connectionId, string roomId)
-        //{
-        //    await _chat.Groups.RemoveFromGroupAsync(connectionId, roomId);
-
-        //    return Ok();
-        //}
 
         public async Task<IActionResult> SendMessage(
             string messageText,
@@ -58,8 +39,5 @@ namespace SignalChat.Controllers
 
             return Ok();
         }
-
-
-
     }
 }

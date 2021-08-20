@@ -8,7 +8,7 @@ createRoomBtn.addEventListener('click', function () {
 })
 
 
-var closeModal = function() {
+var closeModal = function () {
     createRoomModal.classList.remove('active')
 }
 
@@ -19,3 +19,9 @@ function CloseEditModal() {
 function CloseRoomModal() {
     setRoomModal.classList.remove('active')
 }
+
+//function CloseUserModal() {
+//    userModal.classList.remove('active')
+//}
+
+

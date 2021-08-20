@@ -31,51 +31,6 @@ namespace SignalChat.Controllers
             return View(chats);
         }
 
-        //public IActionResult Find()
-        //{
-        //    var users = _context.Users
-        //        .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
-        //        .ToList();
-
-        //    return View(users);
-        //}
-
-        //public IActionResult Private()
-        //{
-        //    var chats = _context.Chats
-        //        .Include(x => x.Users)
-        //            .ThenInclude(x => x.User)
-        //        .Where(x => x.Type == ChatType.Private
-        //            && x.Users
-        //            .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
-        //        .ToList();
-        //    ViewBag.UserId = ClaimTypes.NameIdentifier;
-        //    return View(chats);
-        //}
-
-        //public async Task<IActionResult> CreatePrivateRoom(string userId)
-        //{
-        //    var chat = new Chat
-        //    {
-        //        Type = ChatType.Private
-        //    };
-
-        //    chat.Users.Add(new ChatUser
-        //    {
-        //        UserId = userId
-        //    });
-
-        //    chat.Users.Add(new ChatUser
-        //    {
-        //        UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
-        //    });
-
-        //    _context.Chats.Add(chat);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction("Chat", new { id = chat.Id });
-        //}
-
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
@@ -86,25 +41,9 @@ namespace SignalChat.Controllers
             var UserRole = _context.ChatUsers.Where(x => x.ChatId == id && x.UserId == UserId).FirstOrDefault().Role;
             ViewBag.UserRole = UserRole;
             ViewBag.UserName = User.Identity.Name;
+            ViewBag.ChatId = id;
             return View(chat);
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> CreateMessage(int chatId, string messageText)
-        //{
-        //    var message = new Message
-        //    {
-        //        ChatId = chatId,
-        //        Text = messageText,
-        //        UserName = User.Identity.Name,
-        //        DateTime = System.DateTime.Now
-        //    };
-
-        //    _context.Messages.Add(message);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction("Chat", new { id = chatId });
-        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateRoom(string name)
@@ -118,7 +57,7 @@ namespace SignalChat.Controllers
 
             chat.Users.Add(new ChatUser
             {
-                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value, //search how it works
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value, 
                 Role = UserRole.Admin
             });
 
@@ -143,7 +82,6 @@ namespace SignalChat.Controllers
                 UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
                 Role = UserRole.Member
             };
-
             _context.ChatUsers.Add(chatUser);
             await _context.SaveChangesAsync();
 
@@ -167,12 +105,7 @@ namespace SignalChat.Controllers
 
             return Ok();
         }
-        //public async Task<JsonResult> GetMessageId(string UserName, string Text)
-        //{
 
-        //    var Id = await _context.Messages.Where(x => x.Text == Text && x.UserName == UserName).ToListAsync();
-        //    return Json(Id);
-        //}
         public async Task<JsonResult> MakePrivate(int chatId)
         {
             var room = _context.Chats.Where(x => x.Id == chatId).FirstOrDefault();
@@ -191,7 +124,6 @@ namespace SignalChat.Controllers
             return Json(true);
         }
 
-        [HttpPost]
         public async Task<JsonResult> DeleteRoom(int chatId)
         {
 
@@ -205,11 +137,30 @@ namespace SignalChat.Controllers
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             _context.ChatUsers.Remove(_context.ChatUsers.Where(x => x.ChatId == chatId && x.UserId == UserId).FirstOrDefault());
-            //_context.Chats.Where(x => x.Id == chatId).FirstOrDefault()
-            //    .Users.Remove(_context.ChatUsers.Where(y => y.UserId == UserId).FirstOrDefault());
             await _context.SaveChangesAsync();
 
             return Json(true);
         }
+
+        public IActionResult Members(int ChatId)
+        {
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewBag.UserRole = _context.ChatUsers.Where(x => x.ChatId == ChatId && x.UserId == UserId).FirstOrDefault().Role;
+
+            var users = _context.Chats
+                .Join(_context.ChatUsers, x => x.Id, y => y.ChatId, (x, y) => 
+                new { Name =  y.User, Id = y.ChatId, UserId = y.UserId})
+                .Where(t => t.Id == ChatId && t.UserId != UserId).Select(t => t.Name).ToList();
+
+            return View(users);
+        }
+
+        //public async Task<JsonResult> KickUser(string UserId, int ChatId)
+        //{
+        //    _context.ChatUsers.Remove(_context.ChatUsers.Where(x => x.ChatId == ChatId && x.UserId == UserId).FirstOrDefault());
+        //    await _context.SaveChangesAsync();
+
+        //    return Json(true);
+        //}
     }
 }

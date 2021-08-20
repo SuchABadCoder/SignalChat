@@ -20,13 +20,18 @@
 </div>
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
-
 <script type="text/javascript">
     var userName = document.getElementById("userName").value;
     var chatId = document.getElementById("chatId").value;
+    var editMessageModal = document.getElementById("edit-message-modal")
+    var setRoomModal = document.getElementById('set-room-modal')
+   /* var userModal = document.getElementById('user-modal')*/
+    var MessageId = 0;
+   /* var userToKickId;*/
+
 
     var connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub")
+        .withUrl("/chatHub")
         .build();
 
         connection.start().then(function () { }).catch(function (err) {
@@ -50,11 +55,6 @@
         event.preventDefault();
     });
 
-
-    var editMessageModal = document.getElementById("edit-message-modal")
-    var setRoomModal = document.getElementById('set-room-modal')
-    var MessageId = 0;
-
     function EditMess(Id, Text, userRole, UserName) {
         if (userRole == "SuperAdmin" || UserName == userName) {
             editMessageModal.classList.add('active');
@@ -64,20 +64,6 @@
     }
 
     connection.on("BroadcastMessage", function (message, userName, ChatId) {
-        @*var newMessageId;
-         $.ajax({
-        url: "@Url.Action("GetMessageId", "Home")",
-        type: "POST",
-        data: {
-            'UserName': userName,
-            'Text': message
-        },
-        dataType: 'json',
-             success: function (Id) {
-                 newMessageId = Id;
-        }
-         });
-        console.log(newMessageId);*@
         if (chatId == ChatId) {
             document.getElementById("message").value = '';
             var mes = document.createElement("div");
@@ -142,6 +128,7 @@
     function SetRoom(userRole) {
         var changeRoomType = document.getElementById('make-private');
         setRoomModal.classList.add('active');
+        console.log(userRole)
         if (userRole == "SuperAdmin" || userRole == "Admin") {
             var forAdmin = document.getElementsByClassName('for-admin');
             for (let i = 0; i < forAdmin.length; i++) {
@@ -224,8 +211,33 @@
         event.preventDefault();
     }
 
-    //connection.on("LeaveRoom", function () {
+    //function useRModal(Id) {
+    //    console.log(Id);
+    //    if (userRole == "SuperAdmin" || userRole == "Admin") {
+    //        userToKickId = Id;
+    //        setRoomModal.classList.add('active');
+    //    }
+    //}
 
-    //});
+    @*function kickUser() {
+        var userNameToKick = document.getElementById(userToKickId).value;
+        console.log(userNameToKick)
+        $.ajax({
+            url: "@Url.Action("KickUser", "Home")",
+            type: "POST",
+            data: {
+                'UserId': userToKickId,
+                'ChatId': chatId
+            },
+            dataType: 'json',
+            success: function () {
+                document.getElementById(userToKickId).innerHTML = '';
+            }
+        });
+        connection.invoke("Kick", userNameToKick, chatId).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    }*@
 </script>
 

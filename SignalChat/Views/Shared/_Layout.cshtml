@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SignalChat</title>
-    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -53,18 +52,31 @@
         </div>
     </div>
 
-    <div class="modal" id="set-room-modal">
-        <div class="modal-body">
-            <button type="button" class="close" onclick="CloseRoomModal()">X</button>
-            <header>Edit Room</header>
-            <div>
-                <input type="button" onclick="leave()" value="Leave" />
-                <input type="button" class="for-admin" onclick="roomTypeChange()" value="Make Private" id="make-private" />
-                <input type="button" onclick="users()" value="Members" />
-                <input type="button" class="for-admin" onclick="roomDelete()" value="Delete" />
+    @using (Html.BeginForm("Members", "Home", FormMethod.Post))
+    {
+        <div class="modal" id="set-room-modal">
+            <div class="modal-body">
+                <button type="button" class="close" onclick="CloseRoomModal()">X</button>
+                <header>Edit Room</header>
+                <div>
+                    <input type="button" onclick="leave()" value="Leave" />
+                    <input type="button" class="for-admin" onclick="roomTypeChange()" value="Make Private" id="make-private" />
+                    <input type="hidden" name="ChatId" value="@ViewBag.ChatId" />
+                    <input type="submit" value="Members" />
+                    <input type="button" class="for-admin" onclick="roomDelete()" value="Delete" />
+                </div>
             </div>
         </div>
-    </div>
+    }
+
+    @*<div class="modal" id="user-modal">
+        <div class="modal-body">
+            <button type="button" class="close" onclick="CloseUserModal()">X</button>
+            <div>
+                <input type="button" onclick="kickUser()" value="Kick" />
+            </div>
+        </div>
+    </div>*@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
