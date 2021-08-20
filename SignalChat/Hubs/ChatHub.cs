@@ -19,11 +19,10 @@ namespace SignalChat.Hubs
             await Clients.All.SendAsync("EditMessage", newText, messageId);
         }
 
-        public async Task Delete(int messageId)
-        {
-            await Clients.All.SendAsync("DeleteMessage", messageId);
-        }
+        public async Task Delete(int messageId) => await Clients.All.SendAsync("DeleteMessage", messageId);
 
         public async Task DeleteRoom() => await Clients.All.SendAsync("DeleteRoom");
+
+        public async Task Leave(string userName, string chatId) => await Clients.All.SendAsync("BroadcastMessage", "left room", userName, chatId);
     }
 }

@@ -198,11 +198,16 @@ namespace SignalChat.Controllers
             _context.Chats.Remove(_context.Chats.Where(x => x.Id == chatId).FirstOrDefault());
             await _context.SaveChangesAsync();
 
-            //var chats = _context.Chats
-            //    .Include(x => x.Users)
-            //    .Where(x => !x.Users.Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
-            //    && !x.isClosed)
-            //    .ToList();
+            return Json(true);
+        }
+
+        public async Task<JsonResult> LeaveRoom(int chatId)
+        {
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _context.ChatUsers.Remove(_context.ChatUsers.Where(x => x.ChatId == chatId && x.UserId == UserId).FirstOrDefault());
+            //_context.Chats.Where(x => x.Id == chatId).FirstOrDefault()
+            //    .Users.Remove(_context.ChatUsers.Where(y => y.UserId == UserId).FirstOrDefault());
+            await _context.SaveChangesAsync();
 
             return Json(true);
         }

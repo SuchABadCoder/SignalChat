@@ -205,5 +205,27 @@
     connection.on("DeleteRoom", function () {
         document.location.href = "@Url.Action("Index", "Home")";
     });
+
+    function leave() {
+        $.ajax({
+            url: "@Url.Action("LeaveRoom", "Home")",
+            type: "POST",
+            data: {
+                'chatId': chatId,
+            },
+            dataType: 'json',
+            success: function () {
+                document.location.href = "@Url.Action("Index", "Home")";
+            }
+        });
+        connection.invoke("Leave", userName, chatId).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    }
+
+    //connection.on("LeaveRoom", function () {
+
+    //});
 </script>
 
