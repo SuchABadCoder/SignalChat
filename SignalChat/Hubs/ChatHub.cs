@@ -23,5 +23,7 @@ namespace SignalChat.Hubs
         {
             await Clients.All.SendAsync("DeleteMessage", messageId);
         }
+
+        public async Task DeleteRoom() => await Clients.All.SendAsync("DeleteRoom");
     }
 }

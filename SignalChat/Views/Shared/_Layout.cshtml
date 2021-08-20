@@ -48,7 +48,20 @@
             <div>
                 <input type="text" id="message-text-modal" />
                 <input type="button" onclick="SubmitEdit()" value="Edit" />
-                <input type="button" onclick="DeleteMessage()" value="Delete"/>
+                <input type="button" onclick="DeleteMessage()" value="Delete" />
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="set-room-modal">
+        <div class="modal-body">
+            <button type="button" class="close" onclick="CloseRoomModal()">X</button>
+            <header>Edit Room</header>
+            <div>
+                <input type="button" onclick="Leave()" value="Leave" />
+                <input type="button" class="for-admin" onclick="roomTypeChange()" value="Make Private" id="make-private" />
+                <input type="button" onclick="Users()" value="Members" />
+                <input type="button" class="for-admin" onclick="roomDelete()" value="Delete" />
             </div>
         </div>
     </div>

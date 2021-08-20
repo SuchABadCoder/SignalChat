@@ -20,12 +20,13 @@ namespace SignalChat.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var chats = _context.Chats
+            var chats = await _context.Chats
                 .Include(x => x.Users)
-                .Where(x => !x.Users.Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                .ToList();
+                .Where(x => !x.Users.Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value) 
+                && !x.isClosed)
+                .ToListAsync();
 
             return View(chats);
         }
@@ -111,7 +112,8 @@ namespace SignalChat.Controllers
             var chat = new Chat
             {
                 Name = name,
-                Type = ChatType.Room
+                Type = ChatType.Room,
+                isClosed = false
             };
 
             chat.Users.Add(new ChatUser
@@ -171,5 +173,38 @@ namespace SignalChat.Controllers
         //    var Id = await _context.Messages.Where(x => x.Text == Text && x.UserName == UserName).ToListAsync();
         //    return Json(Id);
         //}
+        public async Task<JsonResult> MakePrivate(int chatId)
+        {
+            var room = _context.Chats.Where(x => x.Id == chatId).FirstOrDefault();
+            room.isClosed = true;
+            await _context.SaveChangesAsync();
+
+            return Json(true);
+        }
+
+        public async Task<JsonResult> MakePublic(int chatId)
+        {
+            var room = _context.Chats.Where(x => x.Id == chatId).FirstOrDefault();
+            room.isClosed = false;
+            await _context.SaveChangesAsync();
+
+            return Json(true);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteRoom(int chatId)
+        {
+
+            _context.Chats.Remove(_context.Chats.Where(x => x.Id == chatId).FirstOrDefault());
+            await _context.SaveChangesAsync();
+
+            //var chats = _context.Chats
+            //    .Include(x => x.Users)
+            //    .Where(x => !x.Users.Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
+            //    && !x.isClosed)
+            //    .ToList();
+
+            return Json(true);
+        }
     }
 }

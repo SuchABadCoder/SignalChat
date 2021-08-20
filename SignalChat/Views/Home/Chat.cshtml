@@ -3,11 +3,10 @@
 <div class="chat-body" id="chatbody">
     @foreach (var message in Model.Messages)
     {
-        <div class="message" onclick='EditMess(@message.Id, "@message.Text", "@ViewBag.UserRole", "@message.UserName")'>
+        <div class="message" id="div-@message.Id" onclick='EditMess(@message.Id, "@message.Text", "@ViewBag.UserRole", "@message.UserName")'>
             <header>@message.UserName:</header>
             <p id="@message.Id">@message.Text</p>
             <footer>@message.DateTime</footer>
-            @*<a href="" onclick = "EditMessage(@message.Id, @message.Text)">Edit</a>*@
         </div>
     }
 </div>
@@ -15,6 +14,7 @@
 <div class = "chat-input">
         <input type="hidden" id="chatId" value="@Model.Id" />
         <input type="hidden" id="userName" value="@ViewContext.HttpContext.User.Identity.Name"/>
+        <input type="button" value="<<" class="settings" onclick='SetRoom("@ViewBag.UserRole")'/>
         <input name="messageText" type="text" id="message" />
         <input type="submit" id="send" value="Send" />
 </div>
@@ -23,6 +23,8 @@
 
 <script type="text/javascript">
     var userName = document.getElementById("userName").value;
+    var chatId = document.getElementById("chatId").value;
+
     var connection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
         .build();
@@ -33,7 +35,6 @@
 
     document.getElementById("send").addEventListener("click", function (event) {
         var message = document.getElementById("message").value;
-        var chatId = document.getElementById("chatId").value;
         $.ajax({
             url: "@Url.Action("SendMessage", "chat")",
             type: "POST",
@@ -41,8 +42,7 @@
                 'chatId': chatId,
                 'messageText': message
             },
-            dataType: 'json',
-            success: function () { console.log("Success!") }
+            dataType: 'json'
         });
         connection.invoke("Send", message, userName, chatId).catch(function (err) {
             return console.error(err.toString());
@@ -52,10 +52,10 @@
 
 
     var editMessageModal = document.getElementById("edit-message-modal")
+    var setRoomModal = document.getElementById('set-room-modal')
     var MessageId = 0;
 
     function EditMess(Id, Text, userRole, UserName) {
-        console.log(userRole);
         if (userRole == "SuperAdmin" || UserName == userName) {
             editMessageModal.classList.add('active');
             document.getElementById("message-text-modal").value = Text;
@@ -63,7 +63,7 @@
         }
     }
 
-    connection.on("BroadcastMessage", function (message, userName, chatId) {
+    connection.on("BroadcastMessage", function (message, userName, ChatId) {
         @*var newMessageId;
          $.ajax({
         url: "@Url.Action("GetMessageId", "Home")",
@@ -78,8 +78,7 @@
         }
          });
         console.log(newMessageId);*@
-        var ChatId = document.getElementById("chatId").value;
-        if (ChatId == chatId) {
+        if (chatId == ChatId) {
             document.getElementById("message").value = '';
             var mes = document.createElement("div");
             mes.classList.add('message')
@@ -106,10 +105,7 @@
             'messageId': MessageId,
             'newText': newText
         },
-        dataType: 'json',
-        success: function () {
-            console.log("SUCCESS");
-        }
+        dataType: 'json'
     });
     connection.invoke("Edit", newText, MessageId).catch(function (err) {
         return console.error(err.toString());
@@ -124,10 +120,7 @@
         data: {
             'messageId': MessageId,
         },
-        dataType: 'json',
-        success: function () {
-            console.log("SUCCESS");
-        }
+        dataType: 'json'
     });
     connection.invoke("Delete", MessageId).catch(function (err) {
         return console.error(err.toString());
@@ -136,15 +129,81 @@
     }
 
     connection.on("EditMessage", function (newText, messageId) {
-        console.log(newText);
         document.getElementById(messageId).innerHTML = newText;
         editMessageModal.classList.remove('active');
     });
 
-     connection.on("DeleteMessage", function (messageId) {
-     console.log(messageId);
-     document.getElementById(messageId).remove();
-     editMessageModal.classList.remove('active');
+    connection.on("DeleteMessage", function (messageId) {
+        var id = 'div-' + messageId;
+        document.getElementById(id).innerHTML = '';
+        editMessageModal.classList.remove('active');
      });
+
+    function SetRoom(userRole) {
+        var changeRoomType = document.getElementById('make-private');
+        setRoomModal.classList.add('active');
+        if (userRole == "SuperAdmin" || userRole == "Admin") {
+            var forAdmin = document.getElementsByClassName('for-admin');
+            for (let i = 0; i < forAdmin.length; i++) {
+                forAdmin[i].classList.add('active');
+            }
+            if ('@Model.isClosed' == "True") {
+                changeRoomType.value = "Make Public";
+            }
+            else {
+                changeRoomType.value = "Make Private";
+            }
+        }
+    }
+
+    function roomTypeChange() {
+        var changeRoomType = document.getElementById('make-private');
+        if (changeRoomType.value == "Make Private") {
+            $.ajax({
+                url: "@Url.Action("MakePrivate", "Home")",
+                type: "POST",
+                data: {
+                    'chatId': chatId,
+                },
+                dataType: 'json',
+                success: function () {
+                    changeRoomType.value = "Make Public";
+                }
+            });
+        } else {
+            $.ajax({
+                url: "@Url.Action("MakePublic", "Home")",
+                type: "POST",
+                data: {
+                    'chatId': chatId,
+                },
+                dataType: 'json',
+                success: function () {
+                    changeRoomType.value = "Make Private";
+                }
+            });
+        }
+    }
+
+    function roomDelete() {
+        setRoomModal.classList.remove('active');
+
+        $.ajax({
+            url: "@Url.Action("DeleteRoom", "Home")",
+            type: "POST",
+            data: {
+                'chatId': chatId,
+            },
+            dataType: 'json'
+        });
+        connection.invoke("DeleteRoom").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    }
+
+    connection.on("DeleteRoom", function () {
+        document.location.href = "@Url.Action("Index", "Home")";
+    });
 </script>
 
