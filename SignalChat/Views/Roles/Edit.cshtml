@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model SignalChat.ViewModels.ChangeRoleViewModel
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <h2>Change roles</h2>
+    <h2>Change roles for user @Model.UserName</h2>
 
     <form asp-action="Edit" method="post">
         <input type="hidden" name="userId" value="@Model.UserId" />

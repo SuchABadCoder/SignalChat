@@ -11,14 +11,22 @@
         var userName = @ViewContext.HttpContext.User.Identity.Name;
     }
     <div class="navbar">
-        @Html.ActionLink("Home", "Index", "Home")
-        @Html.ActionLink("Find", "Find", "Home")
-        @Html.ActionLink("Private", "Private", "Home")
-        @Html.ActionLink(@userName ?? "Unknown", "Index", "Home") @*fix that todo*@
-        @if (ViewContext.HttpContext.User.IsInRole("admin"))
+        @if (ViewContext.HttpContext.User.Identity.IsAuthenticated)
         {
-            @Html.ActionLink("Roles", "Index", "Roles")
+            @Html.ActionLink(@userName, "Index", "Home")
+            @if (ViewContext.HttpContext.User.IsInRole("admin"))
+            {
+                @Html.ActionLink("Roles", "Index", "Roles")
+                @Html.ActionLink("Users", "Index", "Users")
+            }
+            @Html.ActionLink("Logout", "Logout", "Account")
         }
+        else
+        {
+            @Html.ActionLink("Login", "Login", "Account")
+            @Html.ActionLink("Register", "Register", "Account")
+        }
+
     </div>
 
     <div class="main">
