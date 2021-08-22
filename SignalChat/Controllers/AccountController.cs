@@ -13,11 +13,13 @@ namespace SignalChat.Controllers
     {
         private SignInManager<User> _signInManager;
         private UserManager<User> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]

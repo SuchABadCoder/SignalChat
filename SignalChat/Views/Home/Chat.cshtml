@@ -3,7 +3,7 @@
 <div class="chat-body" id="chatbody">
     @foreach (var message in Model.Messages)
     {
-        <div class="message" id="div-@message.Id" onclick='EditMess(@message.Id, "@message.Text", "@ViewBag.UserRole", "@message.UserName")'>
+        <div class="message" id="div-@message.Id" onclick='EditMess(@message.Id, "@message.Text", "@ViewContext.HttpContext.User.IsInRole("admin")", "@message.UserName")'>
             <header>@message.UserName:</header>
             <p id="@message.Id">@message.Text</p>
             <footer>@message.DateTime</footer>
@@ -14,7 +14,7 @@
 <div class = "chat-input">
         <input type="hidden" id="chatId" value="@Model.Id" />
         <input type="hidden" id="userName" value="@ViewContext.HttpContext.User.Identity.Name"/>
-        <input type="button" value="<<" class="settings" onclick='SetRoom("@ViewBag.UserRole")'/>
+        <input type="button" value="<<" class="settings" onclick='SetRoom("@ViewBag.UserRole", "@ViewContext.HttpContext.User.IsInRole("admin")")'/>
         <input name="messageText" type="text" id="message" />
         <input type="submit" id="send" value="Send" />
 </div>
@@ -55,8 +55,8 @@
         event.preventDefault();
     });
 
-    function EditMess(Id, Text, userRole, UserName) {
-        if (userRole == "SuperAdmin" || UserName == userName) {
+    function EditMess(Id, Text, isAdminRole, UserName) {
+        if (isAdminRole == "True" || UserName == userName) {
             editMessageModal.classList.add('active');
             document.getElementById("message-text-modal").value = Text;
             MessageId = Id;
@@ -125,11 +125,11 @@
         editMessageModal.classList.remove('active');
      });
 
-    function SetRoom(userRole) {
+    function SetRoom(userRole, isAdminRole) {
         var changeRoomType = document.getElementById('make-private');
         setRoomModal.classList.add('active');
-        console.log(userRole)
-        if (userRole == "SuperAdmin" || userRole == "Admin") {
+        console.log(isAdminRole)
+        if (isAdminRole == "True" || userRole == "Admin") {
             var forAdmin = document.getElementsByClassName('for-admin');
             for (let i = 0; i < forAdmin.length; i++) {
                 forAdmin[i].classList.add('active');
