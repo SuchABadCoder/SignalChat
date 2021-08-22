@@ -1,11 +1,10 @@
 ﻿@model string
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <div asp-validation-summary="All" class="text-danger"></div>
 
+<div asp-validation-summary="All" class="container">
     <form asp-action="Create" method="post">
-        <div class="form-group">
-            <label for="name">New role</label>
-            <input name="name" class="form-control" />
+        <div class="dws-input">
+            <input type="text" name="name" class="form-control" placeholder="New Role"/>
         </div>
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="dws-submit">Add</button>
     </form>
+</div>

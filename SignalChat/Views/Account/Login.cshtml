@@ -1,11 +1,14 @@
-﻿<div>
+﻿<div class="container">
     @using (Html.BeginForm("Login", "Account", FormMethod.Post))
     {
-        <input type="text" name="username" placeholder="Username"/>
-        <input type="password" name="password" placeholder="Password"/>
-        <button type="submit">Submit</button>
-    }
+        <div class="dws-input">
+            <input type="text" name="username" placeholder="Username" />
+        </div>
+        <div class="dws-input">
+            <input type="password" name="password" placeholder="Password" />
+        </div>
+        <button class="dws-submit" type="submit">Submit</button>
+     }
+     @Html.ActionLink("Register", "Register", "Account")
 </div>
-<div>
-    @Html.ActionLink("Register", "Register", "Account")
-</div>
+

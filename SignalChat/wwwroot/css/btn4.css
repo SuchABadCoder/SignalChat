@@ -1,0 +1,76 @@
+﻿.btn4 {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 15px;
+    margin: 0 15px 15px 0;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    background-color: #c34e4e;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    vertical-align: top;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    z-index: 1;
+}
+
+.btn4 span {
+    position: absolute;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: btn_ripples 0.6s linear infinite;
+
+}
+
+.btn4:hover {
+    box-shadow: 0 1px 2px 0 rgb(195 78 78 / 45%), 0 1px 3px 1px rgb(195 78 78 / 30%);
+    background-color: #c34e4e;
+}
+
+.btn4:active {
+    box-shadow: 0 1px 2px 0 rgb(195 78 78 / 45%), 0 2px 6px 2px rgb(195 78 78 / 30%);
+    background-color: #d45858 !important;
+}
+
+.btn4:focus-visible {
+    box-shadow: 0 0 0 3px lightskyblue;
+}
+
+.btn4:disabled {
+    pointer-events: none;
+    opacity: 0.65;
+}
+
+.btn5 {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 15px;
+    margin: 0 15px 15px 0;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    background-color: #f6e7c4;
+    color: #000;
+    position: relative;
+    overflow: hidden;
+    vertical-align: top;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    z-index: 1;
+}

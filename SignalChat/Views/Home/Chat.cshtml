@@ -15,7 +15,7 @@
         <input type="hidden" id="chatId" value="@Model.Id" />
         <input type="hidden" id="userName" value="@ViewContext.HttpContext.User.Identity.Name"/>
         <input type="button" value="<<" class="settings" onclick='SetRoom("@ViewBag.UserRole", "@ViewContext.HttpContext.User.IsInRole("admin")")'/>
-        <input name="messageText" type="text" id="message" />
+        <input name="messageText"  id="message" />
         <input type="submit" id="send" value="Send" />
 </div>
 

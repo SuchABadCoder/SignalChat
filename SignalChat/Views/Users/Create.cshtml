@@ -1,15 +1,12 @@
 ﻿@model SignalChat.ViewModels.CreateUserViewModel 
 <form asp-action = "Create" asp-controller = "Users" >
-<div asp-validation-summary="All" class="text-danger"></div>
-<div class="form-group">
-    <label asp-for="UserName" class="control-label">Name</label>
-    <input type="text" asp-for="UserName" class="form-control" />
+<div asp-validation-summary="All" class="container">
+<div class="dws-input">
+    <input type="text" asp-for="UserName" class="form-control" placeholder="Username"/>
 </div>
-<div class="form-group">
-    <label asp-for="Password" class="control-label">Password</label>
-    <input type="password" asp-for="Password" class="form-control" />
+<div class="dws-input">
+    <input type="password" asp-for="Password" class="form-control"  placeholder="Password"/>
 </div>
-<div class="form-group">
-    <input type="submit" value="Add" class="btn btn-outline-secondary" />
+    <input type="submit" value="Add" class="dws-submit" />
 </div>
 </form>
